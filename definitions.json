@@ -1,0 +1,31 @@
+{
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "queues": [
+    {
+      "name": "order.queue",
+      "durable": true,
+      "vhost": "/"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "order.exchange",
+      "type": "direct",
+      "durable": true,
+      "vhost": "/"
+    }
+  ],
+  "bindings": [
+    {
+      "source": "order.exchange",
+      "destination": "order.queue",
+      "destination_type": "queue",
+      "routing_key": "order.routing.key",
+      "vhost": "/"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+spring:
+  logging:
+    pattern:
+      level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,metrics,prometheus
+    otlp:
+      metrics:
+        export:
+          url: http://otel-collector:4318/v1/metrics
+          step: 10s
+      tracing:
+        endpoint: http://otel-collector:4318/v1/traces
+    tracing:
+      sampling:
+        probability: 1.0
+    metrics:
+      distribution:
+        percentiles:
+          do.sleep.method.timed: 0.99, 0.95, 0.9, 0.7, 0.5
+          http.server.requests: 0.99, 0.95, 0.9, 0.7, 0.5
+        percentiles-histogram:
+          do.sleep.method.timed: true
+          http.server.requests: true
+        minimum-expected-value:
+          do.sleep.method.timed: 100ms
+          http.server.requests: 100ms
+        maximum-expected-value:
+          do.sleep.method.timed: 10s
+          http.server.requests: 10s
+        slo:
+          do.sleep.method.timed: 300ms,500ms,1s,2s
+          http.server.requests: 300ms,500ms,1s,2s
+  amqp:
+    deserialization:
+      trust-all: true
+  docker:
+    compose:
+      skip: true
+  application:
+    name: order
+
+  datasource:
+    url: jdbc:postgresql://postgres_db:5432/orderdb
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  rabbitmq:
+    host: rabbitmq_broker
+    port: 5672
+    username: admin
+    password: admin
+    queue:
+      name: order.queue
+    template:
+      default-receive-queue: order.queue

@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: order
+  logging:
+    pattern:
+      level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,metrics,prometheus
+    otlp:
+      metrics:
+        export:
+          url: http://localhost:4318/v1/metrics
+          step: 10s
+      tracing:
+        endpoint: http://localhost:4318/v1/traces
+    tracing:
+      enabled: false
+      sampling:
+        probability: 1.0
+    metrics:
+      distribution:
+        percentiles:
+          do.sleep.method.timed: 0.99, 0.95, 0.9, 0.7, 0.5
+          http.server.requests: 0.99, 0.95, 0.9, 0.7, 0.5
+        percentiles-histogram:
+          do.sleep.method.timed: true
+          http.server.requests: true
+        minimum-expected-value:
+          do.sleep.method.timed: 100ms
+          http.server.requests: 100ms
+        maximum-expected-value:
+          do.sleep.method.timed: 10s
+          http.server.requests: 10s
+        slo:
+          do.sleep.method.timed: 300ms,500ms,1s,2s
+          http.server.requests: 300ms,500ms,1s,2s
+  amqp:
+    deserialization:
+      trust-all: true
+  docker:
+    compose:
+      skip: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/orderdb
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    template:
+      default-receive-queue: order.queue
