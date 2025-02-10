@@ -8,7 +8,6 @@ import com.br.ambev.order.repository.entity.Order;
 import com.br.ambev.order.repository.entity.Product;
 import com.br.ambev.order.service.OrderService;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

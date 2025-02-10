@@ -46,7 +46,6 @@ Pré-requisitos
 
     Java 21 ou superior instalado.
     Docker e Docker Compose instalados.
-    (Opcional) IDE de sua preferência (Eclipse, IntelliJ, VS Code, etc.).
 
 # Como Executar
 
